@@ -1,0 +1,36 @@
+<ul class="eti-list">
+  {{~#each tags as |tag index|~}}
+    {{#if tag.editMode}}
+      <li class="eti-tag {{if tag.invalid "eti-invalid"}}">
+        {{input
+          class="eti-input eti-edit-input"
+          disabled=readOnly
+          placeholder=editInputPlaceholder
+          value=tag.title
+          input=(action updateEditInputWidth)
+          enter=(action updateEditInputWidth)
+          keyDown=(action _onEditInputKeyDown)
+          keyUp=(action _onEditInputKeyUp)
+          focusOut=(action _onEditInputFocusOut)
+        }}
+      </li>
+    {{else}}
+      <li class="eti-tag">
+        {{yield tag index this}}
+      </li>
+    {{/if}}
+  {{~/each~}}
+  <li class="eti-tag eti-tag-new">
+    {{input
+      class=(concat "eti-input eti-new-input" (if readOnly " eti-disabled"))
+      disabled=readOnly
+      placeholder=newInputPlaceholder
+      input=(action updateNewInputWidth)
+      enter=(action updateNewInputWidth)
+      keyDown=(action _onNewInputKeyDown)
+      keyUp=(action _onNewInputKeyUp)
+      focusOut=(action _onNewInputFocusOut)
+    }}
+  </li>
+</ul>
+<div class="eti-input-buffer"></div>

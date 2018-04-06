@@ -1,0 +1,1 @@
+export { default } from 'ember-tags-input/components/tags-input';
