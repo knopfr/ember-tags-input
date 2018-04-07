@@ -1,7 +1,7 @@
 ember-tags-input
 ==============================================================================
 
-[Short description of the addon.]
+ember-tag-input is a simple Ember addon that converts a user's typing into tags. New tags are created when the user types a comma, space, semi colon or hits the enter key. Tags can be removed using the backspace key or by clicking the x button on each tag. Tags can be edited by click on existing tag.
 
 Installation
 ------------------------------------------------------------------------------
@@ -14,37 +14,87 @@ ember install ember-tags-input
 Usage
 ------------------------------------------------------------------------------
 
-[Longer description of how to use the addon in apps.]
+In the simplest case, just pass a list of tags to render and actions for adding and removing tags. The component will never change the tags list for you, it will instead call actions when changes need to be made. The component will yield each tag in the list, allowing you to render it as you wish.
+
+```handlebars
+ {{#ember-tags-input
+    tagsData=tags
+    onAddTag=(action addTag)
+    onEditTagAtIndex=(action editTagAtIndex)
+    onRemoveTagAtIndex=(action removeTagAtIndex)
+    as |tagLabel|
+ }}
+  {{tagLabel}}
+ {{/ember-tags-input}}
+ ```
+
+ ```javascript
+ import Controller from '@ember/controller';
+
+ export default Controller.extend({
+  tags: null,
+
+  init() {
+    this._super(...arguments);
+
+    this.set('tags', ['tag-1', 'tag-2', 'tag-3']);
+  },
+
+  addTag(newTagLabel) {
+    this.get('tags').addObject(newTagLabel);
+  },
+
+  editTagAtIndex(tagLabel, index) {
+    this.get('tags').removeAt(index);
+    this.get('tags').insertAt(index, tagLabel);
+  },
+
+  removeTagAtIndex(index) {
+    this.get('tags').removeAt(index);
+  }
+ });
+ ```
 
 
-Contributing
+Options
 ------------------------------------------------------------------------------
 
-### Installation
+### tags
+- An array of tags to render.
+- **default: null**
 
-* `git clone <repository-url>`
-* `cd ember-tags-input`
-* `npm install`
+### readOnly
+- If a read only view of the tags should be displayed. If enabled, existing tags can't be edited or removed and new tags can't be added.
+- **default: false**
 
-### Linting
+### isEditTagsModeEnabled
+- Enables tags edit mode.
+- **default: true**
 
-* `npm run lint:js`
-* `npm run lint:js -- --fix`
+### tagRemoveButtonSvgId
+- String of svg id for tag remove button.
+- **default: null**
 
-### Running tests
+### editInputPlaceholder
+- The edit tag placeholder text to display when the user hasn't typed anything.
+- **default: 'Enter a tag...'**
 
-* `ember test` – Runs the test suite on the current Ember version
-* `ember test --server` – Runs the test suite in "watch mode"
-* `npm test` – Runs `ember try:each` to test your addon against multiple Ember versions
+### newInputPlaceholder
+- The new tag placeholder text to display when the user hasn't typed anything.
+- **default: 'Add a tag...'**
 
-### Running the dummy application
+### splitKeyCodes
+- An array of key codes for adding tag.
+- **default: null**
 
-* `ember serve`
-* Visit the dummy application at [http://localhost:4200](http://localhost:4200).
+### isAutoNewInputWidthEnabled
+- Enables auto width for new tag input.
+- **default: true**
 
-For more information on using ember-cli, visit [https://ember-cli.com/](https://ember-cli.com/).
+### isAutoEditInputWidthEnabled
+- Enables auto width for edit tag input.
+- **default: true**
 
-License
-------------------------------------------------------------------------------
-
-This project is licensed under the [MIT License](LICENSE.md).
+### showRemoveButtons
+- If 'x' removal links should be displayed at the right side of each tag.
+- **default: true**
