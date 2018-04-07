@@ -34,7 +34,13 @@ export default Component.extend({
 
   readOnly: false,
 
+  isEditTagModeEnabled: true,
+
   tagRemoveButtonSvgId: null,
+
+  editInputPlaceholder: 'Enter a tag...',
+
+  newInputPlaceholder: 'Add a tag...',
 
   onTagClick(tag) {
     this.get('tags').forEach((tag) => this.disableEditMode(tag));
