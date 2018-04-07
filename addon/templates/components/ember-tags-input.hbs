@@ -1,3 +1,4 @@
+{{eti-svg-icons}}
 <ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
     {{#if isEditTagsModeEnabled}}
@@ -37,9 +38,7 @@
           {{#if showRemoveButtons}}
             <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
               {{~#if tagRemoveButtonSvgId~}}
-                <svg>
-                  <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
-                </svg>
+                <svg><use xlink:href="#{{tagRemoveButtonSvgId}}"></use></svg>
               {{~/if~}}
             </div>
           {{/if}}

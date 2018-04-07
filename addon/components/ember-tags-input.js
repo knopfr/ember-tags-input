@@ -113,7 +113,7 @@ export default Component.extend({
    @type String
    @public
    */
-  tagRemoveButtonSvgId: null,
+  tagRemoveButtonSvgId: 'eti-cancel',
 
   /**
    The edit tag placeholder text to display when the user hasn't typed anything.

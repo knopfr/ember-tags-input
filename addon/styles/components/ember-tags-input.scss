@@ -44,13 +44,15 @@ $eti-a4: #F4F4F4;
 }
 
 .eti-tag-remove-button {
-  width: 10px;
+  display: flex;
+  align-items: center;
+
+  margin-left: 5px;
   cursor: pointer;
 
-  &:before {
-    content: 'x';
-    color: $eti-a3;
-    float: right;
+  svg {
+    width: 10px;
+    height: 10px;
   }
 }
 
