@@ -8,8 +8,9 @@
             value=tag.label
             disabled=readOnly
             placeholder=editInputPlaceholder
-            enter=(action onEditInputEnter tag index)
             keyDown=(action onEditInputKeyDown)
+            input=(action onEditInputInput)
+            enter=(action onEditInputEnter tag index)
             focusOut=(action onEditInputFocusOut tag index)
           }}
         </li>
@@ -44,6 +45,8 @@
       disabled=readOnly
       placeholder=newInputPlaceholder
       keyDown=(action onNewInputKeyDown)
+      input=(action onNewInputInput)
+      enter=(action onNewInputEnter)
       focusOut=(action onNewInputFocusOut)
     }}
   </li>

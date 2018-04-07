@@ -44,6 +44,10 @@ export default Component.extend({
 
   splitKeyCodes: null,
 
+  isAutoNewInputWidthEnabled: true,
+
+  isAutoEditInputWidthEnabled: true,
+
   onTagClick(tag) {
     this.get('tags').forEach((tag) => this.disableEditMode(tag));
 
@@ -62,43 +66,7 @@ export default Component.extend({
   getTagClassNames() {},
 
   getSortedTags(tags) {
-    return tags.sort();
-  },
-
-  onEditInputEnter(tag, index) {
-    const tagLabel = tag.label.trim();
-
-    if (tagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
-    } else {
-      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
-    }
-
-    this.disableEditMode(tag);
-  },
-
-  onEditInputKeyDown(e, tag, index) {
-    const newTagLabel = e.target.value.trim();
-
-    if (e.which === KEY_CODES.BACKSPACE) {
-      if (newTagLabel.length === 0) {
-        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
-      }
-    } else if (this.isSplitKeyCode(e.which)) {
-      e.preventDefault();
-    }
-  },
-
-  onEditInputFocusOut(tag, index) {
-    const tagLabel = tag.label.trim();
-
-    if (tagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
-    } else {
-      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
-    }
-
-    this.disableEditMode(tag);
+    return tags.sortBy('label');
   },
 
   onNewInputKeyDown(e) {
@@ -120,6 +88,83 @@ export default Component.extend({
     }
   },
 
+  onEditInputKeyDown(e, tag, index) {
+    const newTagLabel = e.target.value.trim();
+
+    if (e.which === KEY_CODES.BACKSPACE) {
+      if (newTagLabel.length === 0) {
+        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+      }
+    } else if (this.isSplitKeyCode(e.which)) {
+      e.preventDefault();
+    }
+  },
+
+  onNewInputInput() {
+    if (this.get('isAutoNewInputWidthEnabled')) {
+      this.updateNewInputWidth();
+    }
+  },
+
+  onEditInputInput() {
+    if (this.get('isAutoEditInputWidthEnabled')) {
+      this.updateEditInputWidth();
+    }
+  },
+
+  onNewInputEnter() {
+    if (this.get('isAutoNewInputWidthEnabled')) {
+      this.updateNewInputWidth();
+    }
+  },
+
+  onEditInputEnter(tag, index) {
+    const tagLabel = tag.label.trim();
+
+    if (tagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+    } else {
+      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+    }
+
+    if (this.get('isAutoEditInputWidthEnabled')) {
+      this.updateEditInputWidth();
+    }
+
+    this.disableEditMode(tag);
+  },
+
+  onNewInputFocusOut(e) {
+    const newTagLabel = e.target.value.trim();
+
+    if (newTagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
+      e.target.value = '';
+    }
+
+    e.preventDefault();
+
+    if (this.get('isAutoNewInputWidthEnabled')) {
+      this.updateNewInputWidth();
+    }
+  },
+
+  onEditInputFocusOut(tag, index) {
+    const tagLabel = tag.label.trim();
+
+    if (tagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+    } else {
+      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+    }
+
+    if (this.get('isAutoEditInputWidthEnabled')) {
+      this.updateEditInputWidth();
+    }
+
+    this.disableEditMode(tag);
+  },
+
   isSplitKeyCode(keyCode) {
     const splitKeyCodes = this.get('splitKeyCodes');
 
@@ -133,17 +178,6 @@ export default Component.extend({
       KEY_CODES.SPACE,
       KEY_CODES.SEMI_COLON
     ].any((splitKeyCode) => splitKeyCode === keyCode);
-  },
-
-  onNewInputFocusOut(e) {
-    const newTagLabel = e.target.value.trim();
-
-    if (newTagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
-      e.target.value = '';
-    }
-
-    e.preventDefault();
   },
 
   onAddTag() {},
