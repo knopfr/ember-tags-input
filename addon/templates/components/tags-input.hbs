@@ -8,9 +8,9 @@
             value=tag.label
             disabled=readOnly
             placeholder=editInputPlaceholder
-            keyDown=(action onEditInputKeyDown)
+            keyDown=(action onEditInputKeyDown tag index)
             input=(action onEditInputInput)
-            enter=(action onEditInputEnter tag index)
+            enter=(action onEditInputEnter)
             focusOut=(action onEditInputFocusOut tag index)
           }}
         </li>

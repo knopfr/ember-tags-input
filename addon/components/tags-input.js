@@ -21,14 +21,12 @@ export default Component.extend({
 
   tags: computed('tagsData.[]', {
     get() {
-      const tags = this.get('tagsData').map((tagLabel) => {
+      return this.get('tagsData').map((tagLabel) => {
         return {
           label: tagLabel,
           classNames: this.getTagClassNames(tagLabel)
         }
       });
-
-      return this.getSortedTags(tags);
     }
   }),
 
@@ -65,10 +63,6 @@ export default Component.extend({
 
   getTagClassNames() {},
 
-  getSortedTags(tags) {
-    return tags.sortBy('label');
-  },
-
   onNewInputKeyDown(e) {
     const newTagLabel = e.target.value.trim();
 
@@ -76,11 +70,11 @@ export default Component.extend({
       const tags = this.get('tags');
 
       if (newTagLabel.length === 0 && tags.length > 0) {
-        this.onRemoveTagAtIndex(tags.length - 1);
+        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
       }
     } else if (this.isSplitKeyCode(e.which)) {
       if (newTagLabel.length > 0) {
-        this.onAddTag(newTagLabel);
+        scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
         e.target.value = '';
       }
 
@@ -88,14 +82,16 @@ export default Component.extend({
     }
   },
 
-  onEditInputKeyDown(e, tag, index) {
-    const newTagLabel = e.target.value.trim();
+  onEditInputKeyDown(tag, index, e) {
+    if (this.isSplitKeyCode(e.which)) {
+      const tagLabel = tag.label.trim();
 
-    if (e.which === KEY_CODES.BACKSPACE) {
-      if (newTagLabel.length === 0) {
+      if (tagLabel.length > 0) {
+        scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+      } else {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
       }
-    } else if (this.isSplitKeyCode(e.which)) {
+
       e.preventDefault();
     }
   },
@@ -118,15 +114,7 @@ export default Component.extend({
     }
   },
 
-  onEditInputEnter(tag, index) {
-    const tagLabel = tag.label.trim();
-
-    if (tagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
-    } else {
-      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
-    }
-
+  onEditInputEnter(tag) {
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
@@ -142,14 +130,14 @@ export default Component.extend({
       e.target.value = '';
     }
 
-    e.preventDefault();
-
     if (this.get('isAutoNewInputWidthEnabled')) {
       this.updateNewInputWidth();
     }
+
+    e.preventDefault();
   },
 
-  onEditInputFocusOut(tag, index) {
+  onEditInputFocusOut(tag, index, e) {
     const tagLabel = tag.label.trim();
 
     if (tagLabel.length > 0) {
@@ -158,11 +146,13 @@ export default Component.extend({
       scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
     }
 
+    this.disableEditMode(tag);
+
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
 
-    this.disableEditMode(tag);
+    e.preventDefault();
   },
 
   isSplitKeyCode(keyCode) {
@@ -186,13 +176,6 @@ export default Component.extend({
 
   onRemoveTagAtIndex() {},
 
-  focusEditInput() {
-    scheduleOnce('afterRender', () => {
-      const $input = this.getEditInputElement();
-      $input.focus();
-    });
-  },
-
   focusNewInput() {
     scheduleOnce('afterRender', () => {
       const $input = this.getNewInputElement();
@@ -200,14 +183,21 @@ export default Component.extend({
     });
   },
 
-  updateEditInputWidth() {
-    const $input = this.getEditInputElement();
-
-    this.updateInputWidth($input);
+  focusEditInput() {
+    scheduleOnce('afterRender', () => {
+      const $input = this.getEditInputElement();
+      $input.focus();
+    });
   },
 
   updateNewInputWidth() {
     const $input = this.getNewInputElement();
+
+    this.updateInputWidth($input);
+  },
+
+  updateEditInputWidth() {
+    const $input = this.getEditInputElement();
 
     this.updateInputWidth($input);
   },
@@ -219,12 +209,12 @@ export default Component.extend({
     $input.width($inputBuffer.width());
   },
 
-  getEditInputElement() {
-    return this.$('.eti-edit-input');
-  },
-
   getNewInputElement() {
     return this.$('.eti-new-input');
+  },
+
+  getEditInputElement() {
+    return this.$('.eti-edit-input');
   },
 
   getInputBufferElement() {
