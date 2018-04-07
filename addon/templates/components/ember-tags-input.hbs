@@ -1,6 +1,6 @@
 <ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
-    {{#if isEditTagModeEnabled}}
+    {{#if isEditTagsModeEnabled}}
       {{#if tag.editMode}}
         <li class="eti-tag eti-edit-tag {{tag.classNames}}" {{action focusEditInput bubbles=false}}>
           {{input
