@@ -1,8 +1,6 @@
-import $ from 'jquery';
-
 import Component from '@ember/component';
 import { get, set, computed } from '@ember/object';
-import { scheduleOnce, debounce } from '@ember/runloop';
+import { scheduleOnce } from '@ember/runloop';
 
 import layout from 'ember-tags-input/templates/components/ember-tags-input';
 
@@ -197,27 +195,28 @@ export default Component.extend({
     return '';
   },
 
-  onNewInputKeyDown(e) {
-    const newTagLabel = e.target.value.trim();
+  onNewInputKeyDown(value, event) {
+    const newTagLabel = value.trim();
 
-    if (e.which === KEY_CODES.BACKSPACE) {
+    if (event.which === KEY_CODES.BACKSPACE) {
       const tags = this.get('tags');
 
       if (newTagLabel.length === 0 && tags.length > 0) {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
       }
-    } else if (this.isSplitKeyCode(e.which)) {
-      $(e.target).focusout();
+    } else if (this.isSplitKeyCode(event.which)) {
+      this.onNewInputFocusOut(value);
 
-      e.preventDefault();
+      event.preventDefault();
     }
   },
 
-  onEditInputKeyDown(e) {
-    if (this.isSplitKeyCode(e.which)) {
-      $(e.target).focusout();
+  onEditInputKeyDown(value, event) {
+    if (this.isSplitKeyCode(event.which)) {
+      const $input = this.getNewInputElement();
+      $input.focus();
 
-      e.preventDefault();
+      event.preventDefault();
     }
   },
 
@@ -245,22 +244,22 @@ export default Component.extend({
     }
   },
 
-  onNewInputFocusOut(e) {
-    const newTagLabel = e.target.value.trim();
+  onNewInputFocusOut(value) {
+    const newTagLabel = value.trim();
 
     if (newTagLabel.length > 0) {
       scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
-      e.target.value = '';
+
+      const $input = this.getNewInputElement();
+      $input.val('');
     }
 
     if (this.get('isAutoNewInputWidthEnabled')) {
       this.updateNewInputWidth();
     }
-
-    e.preventDefault();
   },
 
-  onEditInputFocusOut(tag, index, e) {
+  onEditInputFocusOut(tag, index) {
     const tagLabel = tag.label.trim();
 
     if (tagLabel.length > 0) {
@@ -272,8 +271,6 @@ export default Component.extend({
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
-
-    e.preventDefault();
   },
 
   isSplitKeyCode(keyCode) {

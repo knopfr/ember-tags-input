@@ -75,7 +75,13 @@ $eti-a4: #F4F4F4;
 
 .eti-input-buffer {
   position: absolute;
+  top: -100000px;
+  left: -100000px;
   visibility: hidden;
+}
+
+.eti-fake-input {
+  display: none;
 }
 
 .eti,

@@ -9,10 +9,10 @@
             value=tag.label
             disabled=readOnly
             placeholder=editInputPlaceholder
-            keyDown=(action onEditInputKeyDown)
+            key-down=(action onEditInputKeyDown)
             input=(action onEditInputInput)
             enter=(action onEditInputEnter)
-            focusOut=(action onEditInputFocusOut tag index)
+            focus-out=(action onEditInputFocusOut tag index)
           }}
         </li>
       {{else}}
@@ -47,10 +47,10 @@
       class="eti-input eti-new-input"
       disabled=readOnly
       placeholder=newInputPlaceholder
-      keyDown=(action onNewInputKeyDown)
+      key-down=(action onNewInputKeyDown)
       input=(action onNewInputInput)
       enter=(action onNewInputEnter)
-      focusOut=(action onNewInputFocusOut)
+      focus-out=(action onNewInputFocusOut)
     }}
   </li>
 </ul>
