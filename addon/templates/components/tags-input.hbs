@@ -1,7 +1,7 @@
 <ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
     {{#if tag.editMode}}
-      <li class="eti-tag {{tag.classNames}}" {{action focusEditInput bubbles=false}}>
+      <li class="eti-tag eti-edit-tag {{tag.classNames}}" {{action focusEditInput bubbles=false}}>
         {{input
           class="eti-input eti-edit-input"
           value=tag.label
@@ -20,7 +20,7 @@
       </li>
     {{/if}}
   {{~/each~}}
-  <li class="eti-tag eti-tag-new">
+  <li class="eti-tag eti-new-tag">
     {{input
       class=(concat "eti-input eti-new-input" (if readOnly " eti-disabled"))
       disabled=readOnly

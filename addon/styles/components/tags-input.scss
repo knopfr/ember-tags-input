@@ -30,6 +30,11 @@ $eti-a2: #ECECEC;
   overflow: hidden;
 }
 
+.eti-new-tag,
+.eti-edit-tag {
+  padding: 0;
+}
+
 .eti-tag-content {
   color: $eti-a0;
 
@@ -40,14 +45,17 @@ $eti-a2: #ECECEC;
 
 .eti-input {
   height: 20px;
+  padding: 0 5px;
   border: 0 none;
 
   &:focus {
+    background-color: $eti-a2;
     outline: none;
   }
 }
 
-.eti-new-input {
+.eti-new-input,
+.eti-edit-input {
   width: 60px;
   min-width: 60px;
 }
