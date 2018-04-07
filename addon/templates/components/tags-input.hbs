@@ -1,22 +1,21 @@
-<ul class="eti-list">
+<ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
     {{#if tag.editMode}}
-      <li class="eti-tag {{if tag.invalid "eti-invalid"}}">
+      <li class="eti-tag {{if tag.invalid "eti-invalid"}}" {{action focusEditInput bubbles=false}}>
         {{input
           class="eti-input eti-edit-input"
+          value=tag.label
           disabled=readOnly
           placeholder=editInputPlaceholder
-          value=tag.title
-          input=(action updateEditInputWidth)
-          enter=(action updateEditInputWidth)
-          keyDown=(action _onEditInputKeyDown)
-          keyUp=(action _onEditInputKeyUp)
-          focusOut=(action _onEditInputFocusOut)
+          input=(action onEditInputInput)
+          enter=(action onEditInputEnter tag index)
+          keyDown=(action onEditInputKeyDown)
+          focusOut=(action onEditInputFocusOut tag index)
         }}
       </li>
     {{else}}
-      <li class="eti-tag">
-        {{yield tag index this}}
+      <li class="eti-tag" {{action onTagClick tag bubbles=false}}>
+        {{yield tag.label tag index this}}
       </li>
     {{/if}}
   {{~/each~}}
@@ -25,11 +24,10 @@
       class=(concat "eti-input eti-new-input" (if readOnly " eti-disabled"))
       disabled=readOnly
       placeholder=newInputPlaceholder
-      input=(action updateNewInputWidth)
-      enter=(action updateNewInputWidth)
-      keyDown=(action _onNewInputKeyDown)
-      keyUp=(action _onNewInputKeyUp)
-      focusOut=(action _onNewInputFocusOut)
+      input=(action onNewInputInput)
+      enter=(action onNewInputEnter)
+      keyDown=(action onNewInputKeyDown)
+      focusOut=(action onNewInputFocusOut)
     }}
   </li>
 </ul>

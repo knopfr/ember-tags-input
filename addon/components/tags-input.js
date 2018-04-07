@@ -1,5 +1,6 @@
 import Component from '@ember/component';
 import { get, set, computed } from '@ember/object';
+import { scheduleOnce } from '@ember/runloop';
 
 import layout from 'ember-tags-input/templates/components/tags-input';
 
@@ -14,14 +15,16 @@ const KEY_CODES = {
 export default Component.extend({
   layout,
 
+  classNames: ['eti'],
+
   tagsData: null,
 
   tags: computed('tagsData.[]', {
     get() {
-      const tags = this.get('tagsData').map((tagItem) => {
+      const tags = this.get('tagsData').map((tagLabel) => {
         return {
-          title: tagItem,
-          invalid: this.isTagInvalid(tagItem)
+          label: tagLabel,
+          invalid: this.isTagInvalid(tagLabel)
         }
       });
 
@@ -30,6 +33,122 @@ export default Component.extend({
   }),
 
   readOnly: false,
+
+  onTagClick(tag) {
+    this.get('tags').forEach((tag) => this.disableEditMode(tag));
+
+    this.enableEditMode(tag);
+    this.focusEditInput();
+  },
+
+  enableEditMode(tag) {
+    set(tag, 'editMode', true);
+  },
+
+  disableEditMode(tag) {
+    set(tag, 'editMode', false);
+  },
+
+  isTagInvalid() {
+    return false;
+  },
+
+  getSortedTags(tags) {
+    return tags.sort();
+  },
+
+  onEditInputInput() {},
+
+  onEditInputEnter(tag, index) {
+    const tagLabel = tag.label.trim();
+
+    if (tagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+    } else {
+      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+    }
+
+    this.disableEditMode(tag);
+  },
+
+  onEditInputKeyDown(e, tag, index) {
+    const newTagLabel = e.target.value.trim();
+
+    if (e.which === KEY_CODES.BACKSPACE) {
+      if (newTagLabel.length === 0) {
+        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+      }
+    }
+  },
+
+  onEditInputFocusOut(tag, index) {
+    const tagLabel = tag.label.trim();
+
+    if (tagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+    } else {
+      scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
+    }
+
+    this.disableEditMode(tag);
+  },
+
+  onNewInputInput() {},
+
+  onNewInputEnter() {},
+
+  onNewInputKeyDown(e) {
+    const newTagLabel = e.target.value.trim();
+
+    if (e.which === KEY_CODES.BACKSPACE) {
+      const tags = this.get('tags');
+
+      if (newTagLabel.length === 0 && tags.length > 0) {
+        this.onRemoveTagAtIndex(tags.length - 1);
+      }
+    } else {
+      if (e.which === KEY_CODES.COMMA || e.which === KEY_CODES.ENTER ||
+        e.which === KEY_CODES.SPACE || e.which === KEY_CODES.SEMI_COLON) {
+        if (newTagLabel.length > 0) {
+          this.onAddTag(newTagLabel);
+          e.target.value = '';
+        }
+
+        e.preventDefault();
+      }
+    }
+  },
+
+  onNewInputFocusOut(e) {
+    const newTagLabel = e.target.value.trim();
+
+    if (newTagLabel.length > 0) {
+      scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
+      e.target.value = '';
+    }
+
+    e.preventDefault();
+  },
+
+  onAddTag() {},
+
+  onEditTagAtIndex() {},
+
+  onRemoveTagAtIndex() {},
+
+  focusEditInput() {
+    scheduleOnce('afterRender', () => {
+      const $input = this.getEditInputElement();
+      $input.focus();
+    });
+  },
+
+  focusNewInput() {
+    scheduleOnce('afterRender', () => {
+      const $input = this.getNewInputElement();
+      $input.focus();
+    });
+  },
 
   updateEditInputWidth() {
     const $input = this.getEditInputElement();
@@ -60,53 +179,5 @@ export default Component.extend({
 
   getInputBufferElement() {
     return this.$('.eti-input-buffer');
-  },
-
-  openEditMode(tag) {
-    set(tag, 'editMode', true);
-  },
-
-  closeEditMode(tag) {
-    set(tag, 'editMode', false);
-  },
-
-  isTagInvalid() {},
-
-  getSortedTags() {},
-
-  _addTag(tag) {
-    this.addTag(tag);
-  },
-
-  _removeTagAtIndex(index) {
-    this.removeTagAtIndex(index);
-  },
-
-  addTag() {},
-
-  removeTagAtIndex() {},
-
-  _onNewInputKeyDown() {
-    debugger
-  },
-
-  _onNewInputKeyUp() {
-    debugger
-  },
-
-  _onNewInputFocusOut(value) {
-    const newTag = value.trim();
-
-    this._addTag(newTag);
-  },
-
-  _onEditInputKeyDown() {
-    debugger
-  },
-
-  _onEditInputKeyUp() {
-    debugger
-  },
-
-  _onEditInputFocusOut() {}
+  }
 });
