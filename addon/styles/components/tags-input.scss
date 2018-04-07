@@ -1,5 +1,31 @@
+$eti-a1: #CCCCCC;
+
 .eti {
   font-size: 13px;
+
+  border: 1px solid $eti-a1;
+}
+
+.eti-list {
+  display: flex;
+  flex-wrap: wrap;
+
+  padding: 0;
+  margin: 0;
+}
+
+.eti-tag {
+  display: flex;
+  align-items: center;
+
+  list-style: none;
+  overflow: hidden;
+}
+
+.eti-tag-content {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .eti-input-buffer {

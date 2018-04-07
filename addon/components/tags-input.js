@@ -24,7 +24,7 @@ export default Component.extend({
       const tags = this.get('tagsData').map((tagLabel) => {
         return {
           label: tagLabel,
-          invalid: this.isTagInvalid(tagLabel)
+          classNames: this.getTagClassNames(tagLabel)
         }
       });
 
@@ -49,9 +49,7 @@ export default Component.extend({
     set(tag, 'editMode', false);
   },
 
-  isTagInvalid() {
-    return false;
-  },
+  getTagClassNames() {},
 
   getSortedTags(tags) {
     return tags.sort();

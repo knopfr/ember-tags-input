@@ -1,7 +1,7 @@
 <ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
     {{#if tag.editMode}}
-      <li class="eti-tag {{if tag.invalid "eti-invalid"}}" {{action focusEditInput bubbles=false}}>
+      <li class="eti-tag {{tag.classNames}}" {{action focusEditInput bubbles=false}}>
         {{input
           class="eti-input eti-edit-input"
           value=tag.label
@@ -14,9 +14,9 @@
         }}
       </li>
     {{else}}
-      <li class="eti-tag" {{action onTagClick tag bubbles=false}}>
-        {{yield tag.label tag index this}}
-        <div {{action onRemoveTagAtIndex index bubbles=false}}>[REMOVE]</div>
+      <li class="eti-tag {{tag.classNames}}" {{action onTagClick tag bubbles=false}}>
+        <div class="eti-tag-content">{{yield tag.label tag index this}}</div>
+        <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>[REMOVE]</div>
       </li>
     {{/if}}
   {{~/each~}}
