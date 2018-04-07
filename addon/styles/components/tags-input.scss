@@ -43,6 +43,16 @@ $eti-a2: #ECECEC;
   text-overflow: ellipsis;
 }
 
+.eti-tag-remove-button {
+  width: 10px;
+  cursor: pointer;
+
+  &:before {
+    content: 'x';
+    float: right;
+  }
+}
+
 .eti-input {
   height: 20px;
   padding: 0 5px;

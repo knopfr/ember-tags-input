@@ -34,6 +34,8 @@ export default Component.extend({
 
   readOnly: false,
 
+  tagRemoveButtonSvgId: null,
+
   onTagClick(tag) {
     this.get('tags').forEach((tag) => this.disableEditMode(tag));
 
