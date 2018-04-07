@@ -1,6 +1,8 @@
+import $ from 'jquery';
+
 import Component from '@ember/component';
 import { get, set, computed } from '@ember/object';
-import { scheduleOnce } from '@ember/runloop';
+import { scheduleOnce, debounce } from '@ember/runloop';
 
 import layout from 'ember-tags-input/templates/components/ember-tags-input';
 
@@ -81,6 +83,7 @@ export default Component.extend({
       return this.get('tagsData').map((tagLabel) => {
         return {
           label: tagLabel,
+          editable: this.isTagEditable(tagLabel),
           classNames: this.getTagClassNames(tagLabel)
         }
       });
@@ -186,7 +189,13 @@ export default Component.extend({
     set(tag, 'editMode', false);
   },
 
-  getTagClassNames() {},
+  isTagEditable() {
+    return true;
+  },
+
+  getTagClassNames() {
+    return '';
+  },
 
   onNewInputKeyDown(e) {
     const newTagLabel = e.target.value.trim();
@@ -198,24 +207,15 @@ export default Component.extend({
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
       }
     } else if (this.isSplitKeyCode(e.which)) {
-      if (newTagLabel.length > 0) {
-        scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
-        e.target.value = '';
-      }
+      $(e.target).focusout();
 
       e.preventDefault();
     }
   },
 
-  onEditInputKeyDown(tag, index, e) {
+  onEditInputKeyDown(e) {
     if (this.isSplitKeyCode(e.which)) {
-      const tagLabel = tag.label.trim();
-
-      if (tagLabel.length > 0) {
-        scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
-      } else {
-        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
-      }
+      $(e.target).focusout();
 
       e.preventDefault();
     }
@@ -239,12 +239,10 @@ export default Component.extend({
     }
   },
 
-  onEditInputEnter(tag) {
+  onEditInputEnter() {
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
-
-    this.disableEditMode(tag);
   },
 
   onNewInputFocusOut(e) {
@@ -270,8 +268,6 @@ export default Component.extend({
     } else {
       scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
     }
-
-    this.disableEditMode(tag);
 
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();

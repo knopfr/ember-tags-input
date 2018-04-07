@@ -1,7 +1,7 @@
 {{eti-svg-icons}}
 <ul class="eti-list" {{action focusNewInput bubbles=false}}>
   {{~#each tags as |tag index|~}}
-    {{#if isEditTagsModeEnabled}}
+    {{#if (and isEditTagsModeEnabled tag.editable)}}
       {{#if tag.editMode}}
         <li class="eti-tag eti-edit-tag {{tag.classNames}}" {{action focusEditInput bubbles=false}}>
           {{input
@@ -9,7 +9,7 @@
             value=tag.label
             disabled=readOnly
             placeholder=editInputPlaceholder
-            keyDown=(action onEditInputKeyDown tag index)
+            keyDown=(action onEditInputKeyDown)
             input=(action onEditInputInput)
             enter=(action onEditInputEnter)
             focusOut=(action onEditInputFocusOut tag index)
@@ -18,31 +18,27 @@
       {{else}}
         <li class="eti-tag {{tag.classNames}}" {{action onTagClick tag bubbles=false}}>
           <div class="eti-tag-content">{{yield tag.label tag index this}}</div>
-          {{#unless readOnly}}
-            {{#if showRemoveButtons}}
-              <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
-                {{~#if tagRemoveButtonSvgId~}}
-                  <svg>
-                    <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
-                  </svg>
-                {{~/if~}}
-              </div>
-            {{/if}}
-          {{/unless}}
+          {{#if (and showRemoveButtons (not readOnly))}}
+            <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
+              {{~#if tagRemoveButtonSvgId~}}
+                <svg>
+                  <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
+                </svg>
+              {{~/if~}}
+            </div>
+          {{/if}}
         </li>
       {{/if}}
     {{else}}
       <li class="eti-tag {{tag.classNames}}">
         <div class="eti-tag-content">{{yield tag.label tag index this}}</div>
-        {{#unless readOnly}}
-          {{#if showRemoveButtons}}
+        {{#if (and showRemoveButtons (not readOnly))}}
             <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
               {{~#if tagRemoveButtonSvgId~}}
                 <svg><use xlink:href="#{{tagRemoveButtonSvgId}}"></use></svg>
               {{~/if~}}
             </div>
-          {{/if}}
-        {{/unless}}
+        {{/if}}
       </li>
     {{/if}}
   {{~/each~}}
