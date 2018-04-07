@@ -16,6 +16,7 @@
     {{else}}
       <li class="eti-tag" {{action onTagClick tag bubbles=false}}>
         {{yield tag.label tag index this}}
+        <div {{action onRemoveTagAtIndex index bubbles=false}}>[REMOVE]</div>
       </li>
     {{/if}}
   {{~/each~}}
