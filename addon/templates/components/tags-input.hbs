@@ -7,7 +7,6 @@
           value=tag.label
           disabled=readOnly
           placeholder=editInputPlaceholder
-          input=(action onEditInputInput)
           enter=(action onEditInputEnter tag index)
           keyDown=(action onEditInputKeyDown)
           focusOut=(action onEditInputFocusOut tag index)
@@ -31,8 +30,6 @@
       class=(concat "eti-input eti-new-input" (if readOnly " eti-disabled"))
       disabled=readOnly
       placeholder=newInputPlaceholder
-      input=(action onNewInputInput)
-      enter=(action onNewInputEnter)
       keyDown=(action onNewInputKeyDown)
       focusOut=(action onNewInputFocusOut)
     }}

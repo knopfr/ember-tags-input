@@ -57,8 +57,6 @@ export default Component.extend({
     return tags.sort();
   },
 
-  onEditInputInput() {},
-
   onEditInputEnter(tag, index) {
     const tagLabel = tag.label.trim();
 
@@ -92,10 +90,6 @@ export default Component.extend({
 
     this.disableEditMode(tag);
   },
-
-  onNewInputInput() {},
-
-  onNewInputEnter() {},
 
   onNewInputKeyDown(e) {
     const newTagLabel = e.target.value.trim();
