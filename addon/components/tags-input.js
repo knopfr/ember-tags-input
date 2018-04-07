@@ -42,6 +42,8 @@ export default Component.extend({
 
   newInputPlaceholder: 'Add a tag...',
 
+  splitKeyCodes: null,
+
   onTagClick(tag) {
     this.get('tags').forEach((tag) => this.disableEditMode(tag));
 
@@ -82,6 +84,8 @@ export default Component.extend({
       if (newTagLabel.length === 0) {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
       }
+    } else if (this.isSplitKeyCode(e.which)) {
+      e.preventDefault();
     }
   },
 
@@ -106,17 +110,29 @@ export default Component.extend({
       if (newTagLabel.length === 0 && tags.length > 0) {
         this.onRemoveTagAtIndex(tags.length - 1);
       }
-    } else {
-      if (e.which === KEY_CODES.COMMA || e.which === KEY_CODES.ENTER ||
-        e.which === KEY_CODES.SPACE || e.which === KEY_CODES.SEMI_COLON) {
-        if (newTagLabel.length > 0) {
-          this.onAddTag(newTagLabel);
-          e.target.value = '';
-        }
-
-        e.preventDefault();
+    } else if (this.isSplitKeyCode(e.which)) {
+      if (newTagLabel.length > 0) {
+        this.onAddTag(newTagLabel);
+        e.target.value = '';
       }
+
+      e.preventDefault();
     }
+  },
+
+  isSplitKeyCode(keyCode) {
+    const splitKeyCodes = this.get('splitKeyCodes');
+
+    if (splitKeyCodes) {
+      return splitKeyCodes.any((splitKeyCode) => splitKeyCode === keyCode);
+    }
+
+    return [
+      KEY_CODES.COMMA,
+      KEY_CODES.ENTER,
+      KEY_CODES.SPACE,
+      KEY_CODES.SEMI_COLON
+    ].any((splitKeyCode) => splitKeyCode === keyCode);
   },
 
   onNewInputFocusOut(e) {
