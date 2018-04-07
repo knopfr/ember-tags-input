@@ -17,31 +17,39 @@
       {{else}}
         <li class="eti-tag {{tag.classNames}}" {{action onTagClick tag bubbles=false}}>
           <div class="eti-tag-content">{{yield tag.label tag index this}}</div>
-          <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
-            {{~#if tagRemoveButtonSvgId~}}
-              <svg>
-                <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
-              </svg>
-            {{~/if~}}
-          </div>
+          {{#unless readOnly}}
+            {{#if showRemoveButtons}}
+              <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
+                {{~#if tagRemoveButtonSvgId~}}
+                  <svg>
+                    <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
+                  </svg>
+                {{~/if~}}
+              </div>
+            {{/if}}
+          {{/unless}}
         </li>
       {{/if}}
     {{else}}
       <li class="eti-tag {{tag.classNames}}">
         <div class="eti-tag-content">{{yield tag.label tag index this}}</div>
-        <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
-          {{~#if tagRemoveButtonSvgId~}}
-            <svg>
-              <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
-            </svg>
-          {{~/if~}}
-        </div>
+        {{#unless readOnly}}
+          {{#if showRemoveButtons}}
+            <div class="eti-tag-remove-button" {{action onRemoveTagAtIndex index bubbles=false}}>
+              {{~#if tagRemoveButtonSvgId~}}
+                <svg>
+                  <use xlink:href="#{{tagRemoveButtonSvgId}}"></use>
+                </svg>
+              {{~/if~}}
+            </div>
+          {{/if}}
+        {{/unless}}
       </li>
     {{/if}}
   {{~/each~}}
   <li class="eti-tag eti-new-tag">
     {{input
-      class=(concat "eti-input eti-new-input" (if readOnly " eti-disabled"))
+      class="eti-input eti-new-input"
       disabled=readOnly
       placeholder=newInputPlaceholder
       keyDown=(action onNewInputKeyDown)

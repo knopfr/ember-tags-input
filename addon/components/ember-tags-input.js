@@ -65,6 +65,8 @@ export default Component.extend({
 
   classNames: ['eti'],
 
+  classNameBindings: ['readOnly:eti-read-only'],
+
   /**
    An array of tags to render.
 
@@ -123,7 +125,7 @@ export default Component.extend({
   editInputPlaceholder: 'Enter a tag...',
 
   /**
-   The new tag placeholder text to display when the user hasn't typed anything. Isn't displayed if readOnly=true.
+   The new tag placeholder text to display when the user hasn't typed anything.
 
    @property newInputPlaceholder
    @type String
@@ -158,11 +160,22 @@ export default Component.extend({
    */
   isAutoEditInputWidthEnabled: true,
 
-  onTagClick(tag) {
-    this.get('tags').forEach((tag) => this.disableEditMode(tag));
+  /**
+   If 'x' removal links should be displayed at the right side of each tag.
 
-    this.enableEditMode(tag);
-    this.focusEditInput();
+   @property showRemoveButtons
+   @type Boolean
+   @public
+   */
+  showRemoveButtons: true,
+
+  onTagClick(tag) {
+    if (!this.get('readOnly')) {
+      this.get('tags').forEach((tag) => this.disableEditMode(tag));
+
+      this.enableEditMode(tag);
+      this.focusEditInput();
+    }
   },
 
   enableEditMode(tag) {

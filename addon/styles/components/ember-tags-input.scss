@@ -2,6 +2,7 @@ $eti-a0: #000000;
 $eti-a1: #CCCCCC;
 $eti-a2: #ECECEC;
 $eti-a3: #949494;
+$eti-a4: #F4F4F4;
 
 .eti {
   border: 1px solid $eti-a1;
@@ -82,4 +83,14 @@ $eti-a3: #949494;
   font-family: Arial, sans-serif;
   font-size: 11px;
   font-weight: normal;
+}
+
+.eti-read-only {
+  &, .eti-input {
+    background-color: $eti-a4;
+  }
+
+  .eti-tag {
+    cursor: default;
+  }
 }
