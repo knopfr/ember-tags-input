@@ -1,10 +1,9 @@
 $eti-a0: #000000;
 $eti-a1: #CCCCCC;
 $eti-a2: #ECECEC;
+$eti-a3: #949494;
 
 .eti {
-  font-size: 13px;
-
   border: 1px solid $eti-a1;
 }
 
@@ -49,6 +48,7 @@ $eti-a2: #ECECEC;
 
   &:before {
     content: 'x';
+    color: $eti-a3;
     float: right;
   }
 }
@@ -73,5 +73,13 @@ $eti-a2: #ECECEC;
 .eti-input-buffer {
   position: absolute;
   visibility: hidden;
-  font-size: 13px;
+}
+
+.eti,
+.eti-tag,
+.eti-input,
+.eti-input-buffer {
+  font-family: Arial, sans-serif;
+  font-size: 11px;
+  font-weight: normal;
 }
