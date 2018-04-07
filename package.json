@@ -1,17 +1,19 @@
 {
   "name": "ember-tags-input",
-  "version": "0.0.2",
-  "description": "The default blueprint for ember-cli addons.",
+  "version": "0.0.3",
+  "description": "Simple Ember addon for entering tags.",
   "keywords": [
-    "ember-addon"
+    "ember-addon",
+    "tags",
+    "tags input"
   ],
   "license": "MIT",
-  "author": "",
+  "author": "Alexey Bedonik <alexey.bedonik@gmail.com>",
   "directories": {
     "doc": "doc",
     "test": "tests"
   },
-  "repository": "",
+  "repository": "https://github.com/abedonik/ember-tags-input",
   "scripts": {
     "build": "ember build",
     "lint:js": "eslint ./*.js addon addon-test-support app config lib server test-support tests",
