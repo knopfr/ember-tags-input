@@ -1,6 +1,6 @@
 {
   "name": "ember-tags-input",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "Simple Ember addon for entering tags.",
   "keywords": [
     "ember-addon",
