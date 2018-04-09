@@ -83,10 +83,6 @@ Options
 - The new tag placeholder text to display when the user hasn't typed anything.
 - **default: 'Add a tag...'**
 
-### splitKeyCodes
-- An array of key codes for adding tag.
-- **default: null**
-
 ### isAutoNewInputWidthEnabled
 - Enables auto width for new tag input.
 - **default: true**

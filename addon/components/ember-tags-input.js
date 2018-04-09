@@ -149,15 +149,6 @@ export default Component.extend({
   newInputMaxLength: null,
 
   /**
-   An array of key codes for adding tag.
-
-   @property splitKeyCodes
-   @type Array[Number]
-   @public
-   */
-  splitKeyCodes: null,
-
-  /**
    Enables auto width for new tag input.
 
    @property isAutoNewInputWidthEnabled
@@ -223,7 +214,7 @@ export default Component.extend({
       if (newTagLabel.length === 0 && tags.length > 0) {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
       }
-    } else if (this.isSplitKeyCode(event.which)) {
+    } else if (this.isSplitKeyCode(event)) {
       this.onNewInputFocusOut(value);
 
       event.preventDefault();
@@ -231,7 +222,7 @@ export default Component.extend({
   },
 
   onEditInputKeyDown(value, event) {
-    if (this.isSplitKeyCode(event.which)) {
+    if (this.isSplitKeyCode(event)) {
       const $input = this.getNewInputElement();
       $input.focus();
 
@@ -292,19 +283,15 @@ export default Component.extend({
     }
   },
 
-  isSplitKeyCode(keyCode) {
-    const splitKeyCodes = this.get('splitKeyCodes');
-
-    if (splitKeyCodes) {
-      return splitKeyCodes.any((splitKeyCode) => splitKeyCode === keyCode);
-    }
-
+  isSplitKeyCode(event) {
     return [
       KEY_CODES.COMMA,
       KEY_CODES.ENTER,
       KEY_CODES.SPACE,
       KEY_CODES.SEMI_COLON
-    ].any((splitKeyCode) => splitKeyCode === keyCode);
+    ].any(splitKeyCode => {
+      return splitKeyCode === event.which && !event.shiftKey;
+    });
   },
 
   /**
