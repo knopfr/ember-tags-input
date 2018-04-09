@@ -9,6 +9,7 @@
             value=tag.label
             disabled=readOnly
             placeholder=editInputPlaceholder
+            maxlength=editInputMaxLength
             key-down=(action onEditInputKeyDown)
             input=(action onEditInputInput)
             enter=(action onEditInputEnter)
@@ -47,6 +48,7 @@
       class="eti-input eti-new-input"
       disabled=readOnly
       placeholder=newInputPlaceholder
+      maxlength=newInputMaxLength
       key-down=(action onNewInputKeyDown)
       input=(action onNewInputInput)
       enter=(action onNewInputEnter)

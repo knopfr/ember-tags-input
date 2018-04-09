@@ -135,6 +135,20 @@ export default Component.extend({
   newInputPlaceholder: 'Add a tag...',
 
   /**
+   @property newInputPlaceholder
+   @type Number
+   @public
+   */
+  editInputMaxLength: null,
+
+  /**
+   @property newInputPlaceholder
+   @type Number
+   @public
+   */
+  newInputMaxLength: null,
+
+  /**
    An array of key codes for adding tag.
 
    @property splitKeyCodes
