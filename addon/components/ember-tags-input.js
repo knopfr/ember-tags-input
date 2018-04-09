@@ -189,6 +189,11 @@ export default Component.extend({
       this.get('tags').forEach((tag) => this.disableEditMode(tag));
 
       this.enableEditMode(tag);
+
+      if (this.get('isAutoEditInputWidthEnabled')) {
+        scheduleOnce('afterRender', () => this.updateEditInputWidth());
+      }
+
       this.focusEditInput();
     }
   },
