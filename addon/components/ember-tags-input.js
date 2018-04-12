@@ -78,7 +78,7 @@ export default Component.extend({
 
   tags: computed('tagsData.[]', {
     get() {
-      return this.get('tagsData').map((tagLabel) => {
+      return (this.get('tagsData') || []).map((tagLabel) => {
         return {
           label: tagLabel,
           editable: this.isTagEditable(tagLabel),
