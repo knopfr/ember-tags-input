@@ -1,7 +1,7 @@
 ember-tags-input
 ==============================================================================
 
-ember-tag-input is a simple Ember addon that converts a user's typing into tags. New tags are created when the user types a comma, space, semi colon or hits the enter key. Tags can be removed using the backspace key or by clicking the x button on each tag. Tags can be edited by click on existing tag.
+ember-tags-input is a simple Ember addon that converts a user's typing into tags. New tags are created when the user types a comma, space, semi colon or hits the enter key. Tags can be removed using the backspace key or by clicking the x button on each tag. Tags can be edited by click on existing tag.
 
 Installation
 ------------------------------------------------------------------------------
@@ -16,11 +16,13 @@ Usage
 
 In the simplest case, just pass a list of tags to render and actions for adding and removing tags. The component will never change the tags list for you, it will instead call actions when changes need to be made. The component will yield each tag in the list, allowing you to render it as you wish.
 
-```handlebars
+ ```handlebars
  {{#ember-tags-input
     tagsData=tags
     onAddTag=(action addTag)
-    onEditTagAtIndex=(action editTagAtIndex)
+    onAddTags=(action addTags)
+    onUpdateTagAtIndex=(action updateTagAtIndex)
+    onReplaceTagAtIndex=(action replaceTagAtIndex)
     onRemoveTagAtIndex=(action removeTagAtIndex)
     as |tagLabel|
  }}
@@ -40,13 +42,20 @@ In the simplest case, just pass a list of tags to render and actions for adding 
     this.set('tags', ['tag-1', 'tag-2', 'tag-3']);
   },
 
-  addTag(newTagLabel) {
-    this.get('tags').addObject(newTagLabel);
+  addTag(newTag) {
+    this.get('tags').addObject(newTag);
+  },
+  
+  addTags(newTags) {
+    this.get('tags').addObject(newTags);
   },
 
-  editTagAtIndex(tagLabel, index) {
-    this.get('tags').removeAt(index);
-    this.get('tags').insertAt(index, tagLabel);
+  updateTagAtIndex(tag, index) {
+    this.get('tags').replace(index, 1, tag);
+  },
+
+  replaceTagAtIndex(tags, index) {
+    this.get('tags').replace(index, 1, tags);
   },
 
   removeTagAtIndex(index) {

@@ -22,11 +22,13 @@ const KEY_CODES = {
  \{{#ember-tags-input
     tagsData=tags
     onAddTag=(action addTag)
-    onEditTagAtIndex=(action editTagAtIndex)
+    onAddTags=(action addTags)
+    onUpdateTagAtIndex=(action updateTagAtIndex)
+    onReplaceTagAtIndex=(action replaceTagAtIndex)
     onRemoveTagAtIndex=(action removeTagAtIndex)
     as |tagLabel|
  }}
-  {{tagLabel}}
+    {{tagLabel}}
  {{/ember-tags-input}}
  ```
 
@@ -42,13 +44,20 @@ const KEY_CODES = {
     this.set('tags', ['tag-1', 'tag-2', 'tag-3']);
   },
 
-  addTag(newTagLabel) {
-    this.get('tags').addObject(newTagLabel);
+  addTag(newTag) {
+    this.get('tags').addObject(newTag);
   },
 
-  editTagAtIndex(tagLabel, index) {
-    this.get('tags').removeAt(index);
-    this.get('tags').insertAt(index, tagLabel);
+  addTags(newTags) {
+    this.get('tags').addObject(newTags);
+  },
+
+  updateTagAtIndex(tag, index) {
+    this.get('tags').replace(index, 1, tag);
+  },
+
+  replaceTagAtIndex(tags, index) {
+    this.get('tags').replace(index, 1, tags);
   },
 
   removeTagAtIndex(index) {
@@ -82,7 +91,7 @@ export default Component.extend({
         return {
           label: tagLabel,
           editable: this.isTagEditable(tagLabel),
-          classNames: this.getTagClassNames(tagLabel)
+          classNames: this.getTagCssClassNames(tagLabel)
         }
       });
     }
@@ -201,7 +210,7 @@ export default Component.extend({
     return true;
   },
 
-  getTagClassNames() {
+  getTagCssClassNames() {
     return '';
   },
 
