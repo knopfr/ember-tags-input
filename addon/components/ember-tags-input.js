@@ -206,64 +206,54 @@ export default Component.extend({
   },
 
   onNewInputKeyDown(value, event) {
-    const newTagLabel = value.trim();
-
     if (event.which === KEY_CODES.BACKSPACE) {
-      const tags = this.get('tags');
+      value = value.trim();
 
-      if (newTagLabel.length === 0 && tags.length > 0) {
-        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
+      if (value.length === 0 && this.get('tags.length')) {
+        scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(this.get('tags.length') - 1));
       }
-    } else if (this.isSplitHotKey(event)) {
-      this.onNewInputFocusOut(value);
-
-      event.preventDefault();
     }
   },
 
-  onEditInputKeyDown(value, event) {
-    if (this.isSplitHotKey(event)) {
-      const $input = this.getNewInputElement();
-      $input.focus();
-
-      event.preventDefault();
+  onNewInputInput(event) {
+    if (this.hasSplitSymbols(event.target.value)) {
+      this.onNewInputFocusOut(event.target.value);
     }
-  },
 
-  isSplitHotKey(event) {
-    return [
-      KEY_CODES.COMMA,
-      KEY_CODES.ENTER,
-      KEY_CODES.SPACE,
-      KEY_CODES.SEMI_COLON
-    ].any(splitKeyCode => {
-      return splitKeyCode === event.which && !event.shiftKey;
-    });
-  },
-
-  getSplitSymbols() {
-    return [' ', ',', ';'];
-  },
-
-  onNewInputInput() {
     if (this.get('isAutoNewInputWidthEnabled')) {
       this.updateNewInputWidth();
     }
   },
 
-  onEditInputInput() {
+  onEditInputInput(tag) {
+    if (this.hasSplitSymbols(tag.label)) {
+      const $input = this.getNewInputElement();
+      $input.focus();
+    }
+
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
   },
 
-  onNewInputEnter() {
+  hasSplitSymbols(value = '') {
+    const splitSymbols = this.getSplitSymbols();
+
+    return splitSymbols.any(splitSymbol => value.includes(splitSymbol));
+  },
+
+  onNewInputEnter(value) {
+    this.onNewInputFocusOut(value);
+
     if (this.get('isAutoNewInputWidthEnabled')) {
       this.updateNewInputWidth();
     }
   },
 
   onEditInputEnter() {
+    const $input = this.getNewInputElement();
+    $input.focus();
+
     if (this.get('isAutoEditInputWidthEnabled')) {
       this.updateEditInputWidth();
     }
@@ -281,8 +271,10 @@ export default Component.extend({
         scheduleOnce('afterRender', () => this.onAddTags(tagsLabels));
       }
 
-      const $input = this.getNewInputElement();
-      $input.val('');
+      scheduleOnce('afterRender', () => {
+        const $input = this.getNewInputElement();
+        $input.val('');
+      });
     }
 
     if (this.get('isAutoNewInputWidthEnabled')) {
@@ -327,6 +319,10 @@ export default Component.extend({
     }
 
     return [value];
+  },
+
+  getSplitSymbols() {
+    return [' ', ',', ';'];
   },
 
   /**
