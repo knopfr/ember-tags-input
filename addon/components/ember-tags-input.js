@@ -214,7 +214,7 @@ export default Component.extend({
       if (newTagLabel.length === 0 && tags.length > 0) {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(tags.length - 1));
       }
-    } else if (this.isSplitKeyCode(event)) {
+    } else if (this.isSplitHotKey(event)) {
       this.onNewInputFocusOut(value);
 
       event.preventDefault();
@@ -222,12 +222,27 @@ export default Component.extend({
   },
 
   onEditInputKeyDown(value, event) {
-    if (this.isSplitKeyCode(event)) {
+    if (this.isSplitHotKey(event)) {
       const $input = this.getNewInputElement();
       $input.focus();
 
       event.preventDefault();
     }
+  },
+
+  isSplitHotKey(event) {
+    return [
+      KEY_CODES.COMMA,
+      KEY_CODES.ENTER,
+      KEY_CODES.SPACE,
+      KEY_CODES.SEMI_COLON
+    ].any(splitKeyCode => {
+      return splitKeyCode === event.which && !event.shiftKey;
+    });
+  },
+
+  getSplitSymbols() {
+    return [' ', ',', ';'];
   },
 
   onNewInputInput() {
@@ -255,10 +270,16 @@ export default Component.extend({
   },
 
   onNewInputFocusOut(value) {
-    const newTagLabel = value.trim();
+    value = value.trim();
 
-    if (newTagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onAddTag(newTagLabel));
+    if (value.length) {
+      const tagsLabels = this.getTagsFromInputValue(value);
+
+      if (tagsLabels.length === 1) {
+        scheduleOnce('afterRender', () => this.onAddTag(tagsLabels[0]));
+      } else {
+        scheduleOnce('afterRender', () => this.onAddTags(tagsLabels));
+      }
 
       const $input = this.getNewInputElement();
       $input.val('');
@@ -270,10 +291,17 @@ export default Component.extend({
   },
 
   onEditInputFocusOut(tag, index) {
-    const tagLabel = tag.label.trim();
+    const value = tag.label.trim();
 
-    if (tagLabel.length > 0) {
-      scheduleOnce('afterRender', () => this.onEditTagAtIndex(tagLabel, index));
+    if (value.length) {
+      const tagsLabels = this.getTagsFromInputValue(value);
+
+      if (tagsLabels.length === 1) {
+        scheduleOnce('afterRender', () => this.onUpdateTagAtIndex(tagsLabels[0], index));
+      } else {
+        scheduleOnce('afterRender', () => this.onReplaceTagAtIndex(tagsLabels, index));
+      }
+
     } else {
       scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(index));
     }
@@ -283,15 +311,22 @@ export default Component.extend({
     }
   },
 
-  isSplitKeyCode(event) {
-    return [
-      KEY_CODES.COMMA,
-      KEY_CODES.ENTER,
-      KEY_CODES.SPACE,
-      KEY_CODES.SEMI_COLON
-    ].any(splitKeyCode => {
-      return splitKeyCode === event.which && !event.shiftKey;
-    });
+  getTagsFromInputValue(value) {
+    const splitSymbols = this.getSplitSymbols();
+
+    if (splitSymbols && splitSymbols.length) {
+      splitSymbols.forEach(splitSymbol => {
+        value = value.replace(new RegExp(splitSymbol, 'g'), splitSymbols[0]);
+      });
+
+      return value.split(splitSymbols[0]).reduce((tags, tag) => {
+        tag = tag.trim();
+
+        return tag ? [...tags, tag] : tags;
+      }, []);
+    }
+
+    return [value];
   },
 
   /**
@@ -303,12 +338,28 @@ export default Component.extend({
   onAddTag() {},
 
   /**
-   Action which occurs when tag should be edited.
+   Action which occurs when tags should be added.
 
-   @method onEditTagAtIndex
+   @method onAddTags
    @public
    */
-  onEditTagAtIndex() {},
+  onAddTags() {},
+
+  /**
+   Action which occurs when tag should be updated.
+
+   @method onUpdateTagAtIndex
+   @public
+   */
+  onUpdateTagAtIndex() {},
+
+  /**
+   Action which occurs when tag should be replaced with new tags.
+
+   @method onReplaceTagAtIndex
+   @public
+   */
+  onReplaceTagAtIndex() {},
 
   /**
    Action which occurs when tag should be removed.

@@ -11,8 +11,8 @@
             placeholder=editInputPlaceholder
             maxlength=editInputMaxLength
             key-down=(action onEditInputKeyDown)
-            input=(action onEditInputInput)
-            enter=(action onEditInputEnter)
+            input=(action onEditInputInput tag index)
+            enter=(action onEditInputEnter tag index)
             focus-out=(action onEditInputFocusOut tag index)
           }}
         </li>
