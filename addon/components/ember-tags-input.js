@@ -5,11 +5,7 @@ import { scheduleOnce } from '@ember/runloop';
 import layout from 'ember-tags-input/templates/components/ember-tags-input';
 
 const KEY_CODES = {
-  BACKSPACE: 8,
-  COMMA: 188,
-  ENTER: 13,
-  SPACE: 32,
-  SEMI_COLON: 186
+  BACKSPACE: 8
 };
 
 /**
@@ -283,6 +279,10 @@ export default Component.extend({
       scheduleOnce('afterRender', () => {
         const $input = this.getNewInputElement();
         $input.val('');
+
+        if (this.get('isAutoNewInputWidthEnabled')) {
+          this.updateNewInputWidth();
+        }
       });
     }
 
