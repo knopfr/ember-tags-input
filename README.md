@@ -84,11 +84,11 @@ Options
 - String of svg id for tag remove button.
 - **default: null**
 
-### editInputPlaceholder
+### editTagInputPlaceholder
 - The edit tag placeholder text to display when the user hasn't typed anything.
 - **default: 'Enter a tag...'**
 
-### newInputPlaceholder
+### newTagInputPlaceholder
 - The new tag placeholder text to display when the user hasn't typed anything.
 - **default: 'Add a tag...'**
 
