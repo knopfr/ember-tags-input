@@ -81,6 +81,11 @@ export default Component.extend({
    */
   tagsData: null,
 
+  /**
+   @property tags
+   @type Array[Object]
+   @private
+   */
   tags: computed('tagsData.[]', {
     get() {
       return (this.get('tagsData') || []).map((tagLabel) => {
@@ -122,36 +127,43 @@ export default Component.extend({
   tagRemoveButtonSvgId: 'eti-cancel',
 
   /**
+   @property newTagInputValue
+   @type String
+   @private
+   */
+  newTagInputValue: null,
+
+  /**
    The edit tag placeholder text to display when the user hasn't typed anything.
 
-   @property editInputPlaceholder
+   @property editTagInputPlaceholder
    @type String
    @public
    */
-  editInputPlaceholder: 'Enter a tag...',
+  editTagInputPlaceholder: 'Enter a tag...',
 
   /**
    The new tag placeholder text to display when the user hasn't typed anything.
 
-   @property newInputPlaceholder
+   @property newTagInputPlaceholder
    @type String
    @public
    */
-  newInputPlaceholder: 'Add a tag...',
+  newTagInputPlaceholder: 'Add a tag...',
 
   /**
-   @property newInputPlaceholder
+   @property editTagInputMaxLength
    @type Number
    @public
    */
-  editInputMaxLength: null,
+  editTagInputMaxLength: null,
 
   /**
-   @property newInputPlaceholder
+   @property newTagInputMaxLength
    @type Number
    @public
    */
-  newInputMaxLength: null,
+  newTagInputMaxLength: null,
 
   /**
    Enables auto width for new tag input.
@@ -210,19 +222,19 @@ export default Component.extend({
     return '';
   },
 
-  onNewInputKeyDown(value, event) {
-    if (event.which === KEY_CODES.BACKSPACE) {
-      value = value.trim();
+  onNewTagInputKeyDown({ which, target: { value } }) {
+    if (which === KEY_CODES.BACKSPACE) {
+      value = value && value.trim();
 
-      if (value.length === 0 && this.get('tags.length')) {
+      if (!value && this.get('tags.length')) {
         scheduleOnce('afterRender', () => this.onRemoveTagAtIndex(this.get('tags.length') - 1));
       }
     }
   },
 
-  onNewInputInput(event) {
-    if (this.hasSplitSymbols(event.target.value)) {
-      this.onNewInputFocusOut(event.target.value);
+  onNewTagInputInput({ target: { value }}) {
+    if (this.hasSplitSymbols(value)) {
+      this.onNewTagInputFocusOut(value);
     }
 
     if (this.get('isAutoNewInputWidthEnabled')) {
@@ -230,8 +242,8 @@ export default Component.extend({
     }
   },
 
-  onEditInputInput(tag) {
-    if (this.hasSplitSymbols(tag.label)) {
+  onEditTagInputInput({ label }) {
+    if (this.hasSplitSymbols(label)) {
       const $input = this.getNewInputElement();
       $input.focus();
     }
@@ -247,15 +259,15 @@ export default Component.extend({
     return splitSymbols.any(splitSymbol => value.includes(splitSymbol));
   },
 
-  onNewInputEnter(value) {
-    this.onNewInputFocusOut(value);
+  onNewTagInputEnter(value) {
+    this.onNewTagInputFocusOut(value);
 
     if (this.get('isAutoNewInputWidthEnabled')) {
       this.updateNewInputWidth();
     }
   },
 
-  onEditInputEnter() {
+  onEditTagInputEnter() {
     const $input = this.getNewInputElement();
     $input.focus();
 
@@ -264,10 +276,10 @@ export default Component.extend({
     }
   },
 
-  onNewInputFocusOut(value) {
-    value = value.trim();
+  onNewTagInputFocusOut(value) {
+    value = value && value.trim();
 
-    if (value.length) {
+    if (value) {
       const tagsLabels = this.getTagsFromInputValue(value);
 
       if (tagsLabels.length === 1) {
@@ -275,23 +287,19 @@ export default Component.extend({
       } else {
         scheduleOnce('afterRender', () => this.onAddTags(tagsLabels));
       }
-
-      scheduleOnce('afterRender', () => {
-        const $input = this.getNewInputElement();
-        $input.val('');
-
-        if (this.get('isAutoNewInputWidthEnabled')) {
-          this.updateNewInputWidth();
-        }
-      });
     }
 
-    if (this.get('isAutoNewInputWidthEnabled')) {
-      this.updateNewInputWidth();
-    }
+    scheduleOnce('afterRender', () => {
+      const $input = this.getNewInputElement();
+      $input.val('');
+
+      if (this.get('isAutoNewInputWidthEnabled')) {
+        this.updateNewInputWidth();
+      }
+    });
   },
 
-  onEditInputFocusOut(tag, index) {
+  onEditTagInputFocusOut(tag, index) {
     const value = tag.label.trim();
 
     if (value.length) {
