@@ -411,12 +411,12 @@ export default Component.extend({
   updateInputWidth($input) {
     const $inputBuffer = this.getInputBufferElement();
 
-    $inputBuffer.html(this.getFormattedText($input.val()));
+    $inputBuffer.html(this.getEscapedHtml($input.val()));
     $input.width($inputBuffer.width());
   },
   
-  getFormattedText(text){
-    return text.replace(/&/g, "&amp;")
+  getEscapedHtml(html){
+    return html.replace(/&/g, "&amp;")
       .replace(/</g, "&lt;")
       .replace(/>/g, "&gt;")
       .replace(/"/g, "&quot;")
